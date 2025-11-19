@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
+        // Seed Users (Admin & Cashier)
         User::factory()->create([
             'name' => 'Cashier-Danny',
             'email' => 'testcashier@example.com',
@@ -30,5 +31,15 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('admin-danny-123$'),
             'role' => 'admin'
         ]);
+
+        $this->command->info('Users seeded successfully!');
+
+        // Seed Products
+        $this->call([
+            ProductSeeder::class,
+            StockSeeder::class,
+        ]);
+
+        $this->command->info('All seeders completed successfully!');
     }
 }

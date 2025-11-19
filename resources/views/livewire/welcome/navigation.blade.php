@@ -2,7 +2,7 @@
         $userCashier = \App\Models\User::where('role', 'cashier')->get();
     @endphp
 
-    <nav class="-mx-3 flex flex-1 justify-end">
+<nav class="flex flex-1 justify-end p-4">
         @auth
             <a
                 href="{{ url('/dashboard') }}"
