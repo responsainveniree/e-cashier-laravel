@@ -14,7 +14,6 @@ class AdminController extends Controller
     public function getListProduct() {
         try {
             $listProduct = Product::with('stocks')->get();
-
             return response()->json([
                 'message' => 'Get data list product successfully',
                 'data' => $listProduct
