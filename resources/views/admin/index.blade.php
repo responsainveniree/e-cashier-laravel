@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Dashboard') }}
+            Dashboard
         </h2>
     </x-slot>
 
@@ -50,28 +50,42 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <template x-for="product in listProduct" :key="product.id">
-                                    <tr class="bg-neutral-primary border-b border-default">
-                                        <td scope="row"
-                                            class="px-6 text-center py-4 font-medium text-heading whitespace-nowrap"
-                                            x-text="product.id">
-                                        </td>
-                                        <td class="px-6 text-center py-4" x-text="product.name">
-                                        </td>
-                                        <td class="px-6 text-center py-4" x-text="product.code">
-                                        </td>
-                                        <td class="px-6 text-center py-4">
-                                            <span
-                                                x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(product.price)"></span>
-                                        </td>
-                                        <td class="px-6 text-center py-4" x-text="product.size">
-                                        </td>
-                                        <td class="px-6 text-center py-4" x-text="product.stocks.length">
-                                        </td>
-                                    </tr>
-                                </template>
+                                <template x-if="listProduct.length > 0 "> <template x-for="product in listProduct"
+                                        :key="product.id">
+                                        <tr class="bg-neutral-primary border-b border-default">
+                                            <td scope="row"
+                                                class="px-6 text-center py-4 font-medium text-heading whitespace-nowrap"
+                                                x-text="product.id">
+                                            </td>
+                                            <td class="px-6 text-center py-4" x-text="product.name">
+                                            </td>
+                                            <td class="px-6 text-center py-4" x-text="product.code">
+                                            </td>
+                                            <td class="px-6 text-center py-4">
+                                                <span
+                                                    x-text="'Rp ' + new Intl.NumberFormat('id-ID').format(product.price)"></span>
+                                            </td>
+                                            <td class="px-6 text-center py-4" x-text="product.size">
+                                            </td>
+                                            <td class="px-6 text-center py-4" x-text="product.stocks.length">
+                                            </td>
+                                        </tr>
+                                    </template> </template>
+
                             </tbody>
                         </table>
+                        <div class="flex gap-2 mt-4 mb-2 justify-center">
+                            <button :disabled="!prevPage" @click="fetchProducts(currentPage - 1)"
+                                class="px-4 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition disabled:bg-gray-500">
+                                Prev
+                            </button>
+                            <span x-text="`Page ${currentPage} of ${lastPage}`"></span>
+                            <button :disabled="!nextPage" @click="fetchProducts(currentPage + 1)"
+                                class="px-4 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition disabled:bg-gray-500">
+                                Next
+                            </button>
+                        </div>
+
                     </div>
                     {{-- End component table --}}
                 </div>
