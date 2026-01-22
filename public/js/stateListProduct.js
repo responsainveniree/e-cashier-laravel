@@ -6,6 +6,20 @@ function stateListProduct(page = 1) {
         nextPage: null,
         prevPage: null,
 
+        //Membuat name objek dan propertinya
+        product: {},
+
+        // menambahkan properti untuk menampilkan / menutup card setiap component
+        isVisible: "card-table",
+
+        btnCreateProduct() {
+            this.isVisible = "create-product";
+        },
+
+        closeCreateProduct() {
+            this.isVisible = "card-table";
+        },
+
         async fetchProducts(page = 1) {
             try {
                 const result = await axios.get("list-products?page=" + page);
