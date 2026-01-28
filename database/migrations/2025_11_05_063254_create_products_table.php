@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('code');
             $table->integer('price');
             $table->string('size');
+            $table->string('description');
             $table->timestamps();
         });
     }

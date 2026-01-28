@@ -33,4 +33,18 @@ class AdminController extends Controller
         }
     }
 
+    public function sendProductData(Request $request) {
+        try {
+            Product::create([
+                'name' => $request->name,
+                'name' => $request->name,
+                'name' => $request->name,
+                'name' => $request->name,
+                'name' => $request->name,
+                ]);
+        } catch (\Exception $error) {
+            //throw $th;
+        }
+    }
+
 }

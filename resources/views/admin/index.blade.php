@@ -1,4 +1,5 @@
     <x-app-layout>
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
         <x-slot name="header">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -25,7 +26,7 @@
                         <!-- Main modal -->
                         <div id="crud-modal" tabindex="-1" aria-hidden="true" x-show="isVisible == 'create-product'"
                             @click.self="closeCreateProduct" x-on:keydown.escape.window="closeCreateProduct"
-                            class="w-[100%  ] overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center h-full bg-gray-900 bg-opacity-50">
+                            class="w-[100%] overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center h-full bg-gray-900 bg-opacity-50">
                             <div class="relative p-4 w-full max-w-2xl max-h-full">
                                 <!-- Modal content -->
                                 <div
@@ -49,59 +50,73 @@
                                         </button>
                                     </div>
                                     <!-- Modal body -->
-                                    <form action="#">
-                                        <div class="py-4 md:py-6">
-                                            <div class="col-span-2">
+                                    <form @submit.prevent="sendDataProduct">
+                                        <div class="py-4 md:py-6 gap-4 px-2">
+
+                                            <div class="col-span-1 sm:col-span-1">
                                                 <label for="name"
-                                                    class="block mb-2.5 text-sm font-medium text-gray-900 dark:text-gray-100">Name</label>
-                                                <input type="text" name="name" id="name"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Name</label>
+                                                <input type="text" x-model="product.name" id="name"
                                                     class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
-                                                    placeholder="Type product name" required="">
+                                                    placeholder="Product name">
                                             </div>
-                                            <div class="col-span-2 sm:col-span-1">
-                                                <label for="price"
-                                                    class="block mb-2.5 text-sm font-medium text-gray-900 dark:text-gray-100">Price</label>
-                                                <input type="number" name="price" id="price"
-                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
-                                                    placeholder="$2999" required="">
-                                            </div>
-                                            <div class="col-span-2 sm:col-span-1">
-                                                <label for="category"
-                                                    class="block mb-2.5 text-sm font-medium text-gray-900 dark:text-gray-100">Category</label>
-                                                <select id="category"
+
+                                            <div class="col-span-1 sm:col-span-1">
+                                                <label for="quantity"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Quantity</label>
+                                                <select x-model="product.quantity" id="quantity"
                                                     class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
-                                                    <option selected="">Select category</option>
+                                                    <template x-for="index in 10" :key="index">
+                                                        <option :value="index" x-text="index"></option>
+                                                    </template>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-span-1 sm:col-span-1">
+                                                <label for="size"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Size</label>
+                                                <input type="text" x-model="product.size" id="size"
+                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
+                                                    placeholder="Size (ex: XL, 42)">
+                                            </div>
+
+                                            <div class="col-span-1 sm:col-span-1">
+                                                <label for="category"
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Category</label>
+                                                <select x-model="product.stock" id="category"
+                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
+                                                    <option value="">Select category</option>
                                                     <option value="TV">TV/Monitors</option>
                                                     <option value="PC">PC</option>
                                                     <option value="GA">Gaming/Console</option>
                                                     <option value="PH">Phones</option>
                                                 </select>
                                             </div>
+
                                             <div class="col-span-2">
                                                 <label for="description"
-                                                    class="block mb-2.5 text-sm font-medium text-gray-900 dark:text-gray-100">Product
+                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Product
                                                     Description</label>
-                                                <textarea id="description" rows="4"
+                                                <textarea id="description" rows="4" x-model="product.description"
                                                     class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3.5"
                                                     placeholder="Write product description here"></textarea>
                                             </div>
                                         </div>
+
                                         <div
-                                            class="flex items-center space-x-4 border-t border-gray-200 dark:border-gray-700 pt-4 md:pt-6 gap-2">
-                                            <button type="submit"
-                                                class="inline-flex items-center text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 mr-2 focus:outline-none">
-                                                <svg class="w-4 h-4 me-1.5 -ms-0.5" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    fill="none" viewBox="0 0 24 24">
-                                                    <path stroke="currentColor" stroke-linecap="round"
-                                                        stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
-                                                </svg>
-                                                Add new product
+                                            class="flex items-center justify-end space-x-3 border-t border-gray-200 dark:border-gray-700 pt-4 md:pt-6">
+                                            <button type="button" @click="closeCreateProduct"
+                                                class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 border border-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                Cancel
                                             </button>
-                                            <button x-on:click="closeCreateProduct" data-modal-hide="crud-modal"
-                                                type="button"
-                                                class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 border border-gray-300 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-700 focus:outline-none ml-2">
-                                                Cancels
+                                            <button type="submit"
+                                                class="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+                                                <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                                </svg>
+                                                Add product
                                             </button>
                                         </div>
                                     </form>

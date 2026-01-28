@@ -12,7 +12,7 @@ class Product extends Model
 
     protected $table = "products";
 
-    protected $fillable = ["name", "code", "price", "size"];
+    protected $fillable = ["name", "code", "price", "size", "description"];
 
     public function stocks() {
         return $this->hasMany(Stock::class);

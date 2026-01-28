@@ -7,7 +7,13 @@ function stateListProduct(page = 1) {
         prevPage: null,
 
         //Membuat name objek dan propertinya
-        product: {},
+        product: {
+            name: "",
+            price: "",
+            quantity: "",
+            size: "",
+            description: "",
+        },
 
         // menambahkan properti untuk menampilkan / menutup card setiap component
         isVisible: "card-table",
@@ -18,6 +24,26 @@ function stateListProduct(page = 1) {
 
         closeCreateProduct() {
             this.isVisible = "card-table";
+        },
+
+        resetField() {
+            Object.assign(this.product, {
+                name: "",
+                price: "",
+                quantity: "",
+                size: "",
+                description: "",
+            });
+        },
+
+        sendDataProduct() {
+            try {
+                console.log(this.product);
+
+                this.resetField();
+            } catch (error) {
+            } finally {
+            }
         },
 
         async fetchProducts(page = 1) {
