@@ -10,10 +10,31 @@ function stateListProduct(page = 1) {
         product: {
             name: "",
             price: "",
-            quantity: "",
+            quantity: 1,
             size: "",
             description: "",
         },
+
+        listSize: {small: 'Small', medium: 'Medium', large: 'Large'},
+
+        errorObject: {
+            isError: false,
+            errorMessage: "",
+        },
+
+        warningObject: {
+            isWarning: false,
+            warningMessage: "",
+            confirmWarning: false,
+        },
+
+        confirmWarning() {
+            this.resetField();
+            this.warningObject.isWarning = false;
+            this.warningObject.confirmWarning = false;
+            this.isVisible = "card-table";
+        },
+
 
         // menambahkan properti untuk menampilkan / menutup card setiap component
         isVisible: "card-table",
@@ -22,24 +43,58 @@ function stateListProduct(page = 1) {
             this.isVisible = "create-product";
         },
 
-        closeCreateProduct() {
-            this.isVisible = "card-table";
+        cancelWarning() {
+            this.warningObject.isWarning = false;
         },
+
+
+        closeCreateProduct() {
+
+
+        const isAnyData = Object.values(this.product).some(
+            value => value !== "" // tambah check untuk quantity default
+        );
+
+        if (isAnyData) {
+            this.warningObject.isWarning = true;
+            this.warningObject.warningMessage = "Masih ada data, yakin mau ditutup?";
+            return;
+        }
+
+        this.resetField();
+        this.isVisible = "card-table";
+    },
+
 
         resetField() {
             Object.assign(this.product, {
                 name: "",
                 price: "",
-                quantity: "",
+                quantity: 1,
                 size: "",
                 description: "",
             });
         },
 
-        sendDataProduct(product) {
-            
+        async sendDataProduct() {
+            console.log(this.product)
+            try {
+                await axios.post("post-product", this.product);
 
-            this.resetField();
+
+                this.resetField();
+                this.isVisible = "card-table";
+                this.fetchProducts(this.currentPage); // optional: refresh table
+            } catch (error) {
+                console.error("Gagal simpan produk:", error);
+                alert("Gagal menyimpan produk. Cek data atau server.");
+            }
+        },
+
+        sizeFormatter: {
+            small: 'S',
+            medium: 'M',
+            large: 'L',
         },
 
         async fetchProducts(page = 1) {

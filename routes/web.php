@@ -10,6 +10,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('admin-dashboard', [AdminController::class, 'index'])->name("admin.dashboard");
     Route::get('cashier-dashboard', [CashierController::class, 'index'])->name("cashier.dashboard");
     Route::get('list-products', [AdminController::class, 'getListProduct'])->name('admin.list-products');
+    Route::post('post-product', [AdminController::class, 'sendProductData'])->name('admin.post-product');
 });
 
 Route::view('dashboard', 'dashboard')

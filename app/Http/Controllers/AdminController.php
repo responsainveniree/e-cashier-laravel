@@ -39,9 +39,11 @@ class AdminController extends Controller
                 throw new \InvalidArgumentException("Missing required field. All field must be filled");
             }
 
+            $parsePrice = (int) $request->price;        
+
             Product::create([
                 'name' => $request->name,
-                'price' => $request->price,
+                'price' => $request->parsePrice,
                 'size' => $request->size,
                 'quantity' => $request->quantity,
                 'description' => $request->description,

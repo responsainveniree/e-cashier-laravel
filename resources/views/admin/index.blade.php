@@ -1,5 +1,4 @@
     <x-app-layout>
-        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
         <x-slot name="header">
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
@@ -14,6 +13,33 @@
                         <div class="mb-2 font-bold text-lg">
                             Halaman Admin Dashboard
                         </div>
+
+                        <!-- Warning Modal -->
+                        <div x-show="warningObject.isWarning" x-transition
+                            class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-6 w-full max-w-sm shadow-lg">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+                                    Konfirmasi
+                                </h3>
+
+                                <p class="text-gray-700 dark:text-gray-300 mb-6" x-text="warningObject.warningMessage">
+                                </p>
+
+                                <div class="flex justify-end gap-2">
+                                    <button @click="cancelWarning"
+                                        class="px-4 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">
+                                        Batal
+                                    </button>
+
+                                    <button @click="confirmWarning"
+                                        class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
+                                        Ya, tutup
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <!-- Modal toggle -->
                         <button
@@ -69,35 +95,43 @@
                                                 <div class="col-span-2 md:col-span-1">
                                                     <label for="quantity"
                                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Quantity</label>
-                                                    <select x-model="product.quantity" id="quantity"
-                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
+                                                    <select x-model.number="product.quantity" id="quantity"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+                                                        text-gray-900 dark:text-gray-100 text-sm rounded-lg
+                                                        focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
+                                                        y
                                                         <template x-for="index in 10" :key="index">
                                                             <option :value="index" x-text="index"></option>
                                                         </template>
                                                     </select>
                                                 </div>
 
+
                                                 <!-- Size -->
                                                 <div class="col-span-2 md:col-span-1">
                                                     <label for="size"
                                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Size</label>
-                                                    <input type="text" x-model="product.size" id="size"
-                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
-                                                        placeholder="Size (ex: XL, 42)">
+                                                    <select x-model="product.size" id="size"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
+                                                        <template x-for="(label, key) in listSize"
+                                                            :key="key">
+                                                            <option :value="key" x-text="label"></option>
+                                                        </template>
+                                                    </select>
+
                                                 </div>
 
-                                                <!-- Category -->
+                                                <!-- Price -->
                                                 <div class="col-span-2 md:col-span-1">
-                                                    <label for="category"
-                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Category</label>
-                                                    <select x-model="product.stock" id="category"
-                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
-                                                        <option value="">Select category</option>
-                                                        <option value="TV">TV/Monitors</option>
-                                                        <option value="PC">PC</option>
-                                                        <option value="GA">Gaming/Console</option>
-                                                        <option value="PH">Phones</option>
-                                                    </select>
+                                                    <label for="price"
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">
+                                                        Price
+                                                    </label>
+                                                    <input type="number" x-model="product.price" id="price"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600
+                                                                text-gray-900 dark:text-gray-100 text-sm rounded-lg
+                                                                focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
+                                                        placeholder="Product price">
                                                 </div>
 
                                                 <!-- Description - Full width -->
