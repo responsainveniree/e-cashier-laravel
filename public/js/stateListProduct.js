@@ -49,21 +49,19 @@ function stateListProduct(page = 1) {
 
 
         closeCreateProduct() {
+            const isAnyData = Object.values(this.product).some(
+                value => value !== "" // tambah check untuk quantity default
+            );
 
+            if (isAnyData) {
+                this.warningObject.isWarning = true;
+                this.warningObject.warningMessage = "Masih ada data, yakin mau ditutup?";
+                return;
+            }
 
-        const isAnyData = Object.values(this.product).some(
-            value => value !== "" // tambah check untuk quantity default
-        );
-
-        if (isAnyData) {
-            this.warningObject.isWarning = true;
-            this.warningObject.warningMessage = "Masih ada data, yakin mau ditutup?";
-            return;
-        }
-
-        this.resetField();
-        this.isVisible = "card-table";
-    },
+            this.resetField();
+            this.isVisible = "card-table";
+        },
 
 
         resetField() {
