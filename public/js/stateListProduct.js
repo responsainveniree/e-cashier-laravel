@@ -36,14 +36,10 @@ function stateListProduct(page = 1) {
             });
         },
 
-        sendDataProduct() {
-            try {
-                console.log(this.product);
+        sendDataProduct(product) {
+            
 
-                this.resetField();
-            } catch (error) {
-            } finally {
-            }
+            this.resetField();
         },
 
         async fetchProducts(page = 1) {

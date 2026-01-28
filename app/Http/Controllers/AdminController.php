@@ -34,16 +34,26 @@ class AdminController extends Controller
     }
 
     public function sendProductData(Request $request) {
-        try {
+    try {
+        if(!$request->name || !$request->price || !$request->size || !$request->quantity || !$request->description) {
+                throw new \InvalidArgumentException("Missing required field. All field must be filled");
+            }
+
             Product::create([
                 'name' => $request->name,
-                'name' => $request->name,
-                'name' => $request->name,
-                'name' => $request->name,
-                'name' => $request->name,
+                'price' => $request->price,
+                'size' => $request->size,
+                'quantity' => $request->quantity,
+                'description' => $request->description,
                 ]);
+
+            return response()->json([
+                'message' => "Successfully create product data"
+            ], 200);
         } catch (\Exception $error) {
-            //throw $th;
+            return response()->json([
+                'message' => $error->getMessage(),
+            ], 500);
         }
     }
 
