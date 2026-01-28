@@ -16,19 +16,20 @@
                         </div>
 
                         <!-- Modal toggle -->
-                        <button data-modal-target="crud-modal" data-modal-toggle="crud-modal"
+                        <button
                             class="rounded-md mb-2 bg-white text-black box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-medium shadow-xs font-medium leading-5 rounded-base text-sm px-4 py-2.5 focus:outline-none"
                             x-on:click="btnCreateProduct" x-show="isVisible == 'card-table'" type="button">
-
                             New Products
                         </button>
 
                         <!-- Main modal -->
-                        <div id="crud-modal" tabindex="-1" aria-hidden="true" x-show="isVisible == 'create-product'"
+                        <div tabindex="-1" x-show="isVisible == 'create-product'"
+                            x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150"
+                            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
                             @click.self="closeCreateProduct" x-on:keydown.escape.window="closeCreateProduct"
-                            class="w-[100%] overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center h-full bg-gray-900 bg-opacity-50">
+                            class="w-full overflow-y-auto overflow-x-hidden fixed inset-0 z-50 flex justify-center items-center h-full bg-gray-900 bg-opacity-50">
                             <div class="relative p-4 w-full max-w-2xl max-h-full">
-                                <!-- Modal content -->
                                 <div
                                     class="relative bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-4 md:p-6">
                                     <!-- Modal header -->
@@ -37,9 +38,9 @@
                                         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
                                             Create new product
                                         </h3>
-                                        <button type="button"
-                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white rounded-lg text-sm w-9 h-9 ms-auto inline-flex justify-center items-center"
-                                            data-modal-hide="crud-modal">
+                                        <!-- Tombol X - HAPUS data-modal-hide, TAMBAH @click Alpine -->
+                                        <button type="button" @click="closeCreateProduct"
+                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-700 dark:hover:text-white rounded-lg text-sm w-9 h-9 ms-auto inline-flex justify-center items-center">
                                             <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                                 width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" stroke-linecap="round"
@@ -51,60 +52,70 @@
                                     </div>
                                     <!-- Modal body -->
                                     <form @submit.prevent="sendDataProduct">
-                                        <div class="py-4 md:py-6 gap-4 px-2">
+                                        <div class="py-4 md:py-6 px-2">
+                                            <!-- Grid 2 kolom -->
+                                            <div class="grid grid-cols-2 gap-4">
 
-                                            <div class="col-span-1 sm:col-span-1">
-                                                <label for="name"
-                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Name</label>
-                                                <input type="text" x-model="product.name" id="name"
-                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
-                                                    placeholder="Product name">
-                                            </div>
+                                                <!-- Name -->
+                                                <div class="col-span-2 md:col-span-1">
+                                                    <label for="name"
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Name</label>
+                                                    <input type="text" x-model="product.name" id="name"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
+                                                        placeholder="Product name">
+                                                </div>
 
-                                            <div class="col-span-1 sm:col-span-1">
-                                                <label for="quantity"
-                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Quantity</label>
-                                                <select x-model="product.quantity" id="quantity"
-                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
-                                                    <template x-for="index in 10" :key="index">
-                                                        <option :value="index" x-text="index"></option>
-                                                    </template>
-                                                </select>
-                                            </div>
+                                                <!-- Quantity -->
+                                                <div class="col-span-2 md:col-span-1">
+                                                    <label for="quantity"
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Quantity</label>
+                                                    <select x-model="product.quantity" id="quantity"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
+                                                        <template x-for="index in 10" :key="index">
+                                                            <option :value="index" x-text="index"></option>
+                                                        </template>
+                                                    </select>
+                                                </div>
 
-                                            <div class="col-span-1 sm:col-span-1">
-                                                <label for="size"
-                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Size</label>
-                                                <input type="text" x-model="product.size" id="size"
-                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
-                                                    placeholder="Size (ex: XL, 42)">
-                                            </div>
+                                                <!-- Size -->
+                                                <div class="col-span-2 md:col-span-1">
+                                                    <label for="size"
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Size</label>
+                                                    <input type="text" x-model="product.size" id="size"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5"
+                                                        placeholder="Size (ex: XL, 42)">
+                                                </div>
 
-                                            <div class="col-span-1 sm:col-span-1">
-                                                <label for="category"
-                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Category</label>
-                                                <select x-model="product.stock" id="category"
-                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
-                                                    <option value="">Select category</option>
-                                                    <option value="TV">TV/Monitors</option>
-                                                    <option value="PC">PC</option>
-                                                    <option value="GA">Gaming/Console</option>
-                                                    <option value="PH">Phones</option>
-                                                </select>
-                                            </div>
+                                                <!-- Category -->
+                                                <div class="col-span-2 md:col-span-1">
+                                                    <label for="category"
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Category</label>
+                                                    <select x-model="product.stock" id="category"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-3 py-2.5">
+                                                        <option value="">Select category</option>
+                                                        <option value="TV">TV/Monitors</option>
+                                                        <option value="PC">PC</option>
+                                                        <option value="GA">Gaming/Console</option>
+                                                        <option value="PH">Phones</option>
+                                                    </select>
+                                                </div>
 
-                                            <div class="col-span-2">
-                                                <label for="description"
-                                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Product
-                                                    Description</label>
-                                                <textarea id="description" rows="4" x-model="product.description"
-                                                    class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3.5"
-                                                    placeholder="Write product description here"></textarea>
+                                                <!-- Description - Full width -->
+                                                <div class="col-span-2 w-full">
+                                                    <label for="description"
+                                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Product
+                                                        Description</label>
+                                                    <textarea id="description" rows="4" x-model="product.description"
+                                                        class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3.5"
+                                                        placeholder="Write product description here"></textarea>
+                                                </div>
+
                                             </div>
                                         </div>
 
+                                        <!-- Footer buttons tetap sama -->
                                         <div
-                                            class="flex items-center justify-end space-x-3 border-t border-gray-200 dark:border-gray-700 pt-4 md:pt-6">
+                                            class="flex items-center justify-end space-x-3 border-t border-gray-200 dark:border-gray-700 pt-4 md:pt-6 gap-2">
                                             <button type="button" @click="closeCreateProduct"
                                                 class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 border border-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white">
                                                 Cancel
