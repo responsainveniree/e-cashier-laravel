@@ -34,29 +34,73 @@ class AdminController extends Controller
     }
 
     public function sendProductData(Request $request) {
-    try {
-        if(!$request->name || !$request->price || !$request->size || !$request->quantity || !$request->description) {
-                throw new \InvalidArgumentException("Missing required field. All field must be filled");
+        try {
+            if(!$request->name || !$request->price || !$request->size || !$request->quantity || !$request->description) {
+                return response()->json([
+                    'message' => "Missing required field. All field must be filled"
+                ], 422); // ← 422 Unprocessable Entity untuk validation error
             }
+                $parsePrice = (int) $request->price;
+                $parseQuantity = (int) $request->quantity;
 
-            $parsePrice = (int) $request->price;        
+                Product::create([
+                    'name' => $request->name,
+                    'price' => $parsePrice,
+                    'size' => $request->size,
+                    'quantity' => $parseQuantity,
+                    'description' => $request->description,
+                    ]);
 
-            Product::create([
-                'name' => $request->name,
-                'price' => $request->parsePrice,
-                'size' => $request->size,
-                'quantity' => $request->quantity,
-                'description' => $request->description,
-                ]);
-
-            return response()->json([
-                'message' => "Successfully create product data"
-            ], 200);
-        } catch (\Exception $error) {
-            return response()->json([
-                'message' => $error->getMessage(),
-            ], 500);
+                return response()->json([
+                    'message' => "Successfully create product data"
+                ], 200);
+            } catch (\Exception $error) {
+                return response()->json([
+                    'message' => $error->getMessage(),
+                ], 500);
         }
     }
+
+    public function editProductData(Request $request) {
+    try {
+        // Validasi semua field termasuk ID
+        if(!$request->id || !$request->name || !$request->price || !$request->size || !$request->quantity || !$request->description) {
+            return response()->json([
+                'message' => "Missing required field. All fields must be filled"
+            ], 422);
+        }
+
+        $parsePrice = (int) $request->price;
+        $parseQuantity = (int) $request->quantity;
+
+        // Cari product berdasarkan ID
+        $product = Product::find($request->id);
+
+        if (!$product) {
+            return response()->json([
+                'message' => "Product not found"
+            ], 404);
+        }
+
+        // Update product
+        $product->update([
+            'name' => $request->name,
+            'price' => $parsePrice,
+            'size' => $request->size,
+            'quantity' => $parseQuantity,
+            'description' => $request->description,
+        ]);
+
+        return response()->json([
+            'message' => "Successfully update product data",
+            'data' => $product
+        ], 200);
+
+    } catch (\Exception $error) {
+        return response()->json([
+            'message' => $error->getMessage(),
+        ], 500);
+    }
+}
 
 }

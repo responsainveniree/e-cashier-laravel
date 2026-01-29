@@ -41,6 +41,13 @@
                     </td>
                     <td class="px-6 text-left py-4" x-text="product.stocks.length">
                     </td>
+                    <td class="px-6 text-left py-4">
+                        <button
+                            class="rounded-md bg-white text-black box-border border border-transparent hover:bg-brand-strong focus:ring-4 focus:ring-brand-sm shadow-xs rounded-base text-sm px-3 py-2 focus:outline-none"
+                            @click="buttonEditProduct(product)" type="button">
+                            Edit
+                        </button>
+                    </td>
                 </tr>
             </template> </template>
 
