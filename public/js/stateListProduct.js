@@ -6,8 +6,18 @@ function stateListProduct(page = 1) {
         nextPage: null,
         prevPage: null,
 
+        // ID disimpan terpisah untuk menghindari reactivity issue
+        editProduct: {
+            id: null,
+            name: "",
+            price: "",
+            quantity: 1,
+            size: "small",
+            description: "",
+        },
+
         product: {
-            id: null, // ✅ Tambahkan ID
+            id: null,
             name: "",
             price: "",
             quantity: 1,
@@ -22,6 +32,14 @@ function stateListProduct(page = 1) {
             isError: false,
             errorMessage: "",
             errorStatus: null,
+        },
+
+        errors: {
+            name: "",
+            price: "",
+            quantity: "",
+            size: "",
+            description: "",
         },
 
         closeError() {
@@ -56,20 +74,34 @@ function stateListProduct(page = 1) {
             this.isVisible = "create-product";
         },
 
-        // ✅ Perbaiki function buttonEditProduct
-        buttonEditProduct(product) {
-            // Set semua data product ke form
-            this.product.id = product.id;
-            this.product.name = product.name;
-            this.product.description = product.description;
-            this.product.price = product.price;
-            this.product.quantity = product.quantity;
-            this.product.size = product.size;
+        buttonEditProduct(productData) {
+            const cleanData = JSON.parse(JSON.stringify(productData));
 
-            // Buka modal edit
+            console.log("check clean data:", cleanData);
+
+            // Simpan data ke editProduct (untuk form edit)
+            this.editProduct = {
+                id: cleanData.id,
+                name: cleanData.name,
+                price: cleanData.price,
+                quantity: cleanData.quantity,
+                size: cleanData.size,
+                description: cleanData.description,
+            };
+
+            this.product = {
+                id: cleanData.id,
+                name: cleanData.name,
+                price: cleanData.price,
+                quantity: cleanData.quantity,
+                size: cleanData.size,
+                description: cleanData.description,
+            };
+
+            console.log("editProduct set:", this.editProduct);
+
+            // Ubah visibility
             this.isVisible = "edit-product";
-
-            console.log("Editing product:", this.product);
         },
 
         closeCreateUpdateModal() {
@@ -91,8 +123,18 @@ function stateListProduct(page = 1) {
         },
 
         resetField() {
+            // Reset editProduct
+            Object.assign(this.editProduct, {
+                id: null,
+                name: "",
+                price: "",
+                quantity: 1,
+                size: "small",
+                description: "",
+            });
+            // Reset product (untuk create form)
             Object.assign(this.product, {
-                id: null, // ✅ Reset ID juga
+                id: null,
                 name: "",
                 price: "",
                 quantity: 1,
@@ -103,37 +145,53 @@ function stateListProduct(page = 1) {
 
         async sendDataProduct() {
             try {
-                await axios.post("post-product", this.product);
+                const newProduct = {
+                    name: this.product.name,
+                    price: Number(this.product.price),
+                    quantity: Number(this.product.quantity),
+                    size: this.product.size,
+                    description: this.product.description,
+                };
+
+                await axios.post("post-product", newProduct);
                 this.resetField();
                 this.isVisible = "card-table";
                 this.fetchProducts(this.currentPage);
             } catch (error) {
                 if (error.response) {
                     const status = error.response.status;
+                    const errorData = error.response.data.errors;
+
+                    Object.keys(this.errors).forEach(
+                        (key) => (this.errors[key] = ""),
+                    );
 
                     switch (status) {
                         case 422:
-                            this.errorObject.errorMessage =
-                                "Data was not valid: " +
-                                error.response.data.message;
+                            for (data in errorData) {
+                                this.errors[data] = errorData[data][0];
+                            }
                             break;
                         case 500:
                             this.errorObject.errorMessage =
                                 "Internal server error: " +
                                 error.response.data.message;
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
                             break;
                         case 401:
                             this.errorObject.errorMessage =
                                 "You're not authorized";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
                             break;
                         default:
                             this.errorObject.errorMessage =
                                 error.response.data.message ||
                                 "Something went wrong";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
                     }
-
-                    this.errorObject.errorStatus = status;
-                    this.errorObject.isError = true;
                 } else {
                     this.errorObject.isError = true;
                     this.errorObject.errorMessage =
@@ -142,13 +200,19 @@ function stateListProduct(page = 1) {
             }
         },
 
-        // ✅ Perbaiki editDataProduct
         async editDataProduct() {
             try {
-                // Kirim data beserta ID
-                await axios.post("edit-product", this.product);
+                // Gunakan editProduct sepenuhnya
+                const dataToSend = {
+                    id: this.editProduct.id,
+                    name: this.editProduct.name,
+                    price: Number(this.editProduct.price),
+                    size: this.editProduct.size,
+                    description: this.editProduct.description,
+                };
 
-                this.resetField();
+                await axios.patch("edit-product", dataToSend);
+
                 this.isVisible = "card-table";
                 this.fetchProducts(this.currentPage);
 
@@ -156,33 +220,43 @@ function stateListProduct(page = 1) {
             } catch (error) {
                 if (error.response) {
                     const status = error.response.status;
+                    const errorData = error.response.data.errors;
+
+                    Object.keys(this.errors).forEach(
+                        (key) => (this.errors[key] = ""),
+                    );
 
                     switch (status) {
                         case 404:
                             this.errorObject.errorMessage = "Product not found";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
                             break;
                         case 422:
-                            this.errorObject.errorMessage =
-                                "Data was not valid: " +
-                                error.response.data.message;
+                            for (data in errorData) {
+                                this.errors[data] = errorData[data][0];
+                            }
                             break;
                         case 500:
                             this.errorObject.errorMessage =
                                 "Internal server error: " +
                                 error.response.data.message;
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
                             break;
                         case 401:
                             this.errorObject.errorMessage =
                                 "You're not authorized";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
                             break;
                         default:
                             this.errorObject.errorMessage =
                                 error.response.data.message ||
                                 "Something went wrong";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
                     }
-
-                    this.errorObject.errorStatus = status;
-                    this.errorObject.isError = true;
                 } else {
                     this.errorObject.isError = true;
                     this.errorObject.errorMessage =
@@ -201,6 +275,8 @@ function stateListProduct(page = 1) {
             try {
                 const result = await axios.get("list-products?page=" + page);
                 const res = result.data.data;
+
+                console.log(result);
 
                 this.listProduct = res.data;
                 this.currentPage = res.current_page;

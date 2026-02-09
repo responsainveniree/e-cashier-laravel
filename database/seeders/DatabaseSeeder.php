@@ -19,27 +19,24 @@ class DatabaseSeeder extends Seeder
 
         // Seed Users (Admin & Cashier)
         User::factory()->create([
-            'name' => 'Cashier-Danny',
-            'email' => 'testcashier@example.com',
-            'password' => bcrypt('cashier-danny-123$'),
-            'role' => 'cashier'
+            "name" => "Cashier-Danny",
+            "email" => "testcashier@example.com",
+            "password" => bcrypt('cashier-danny-123$'),
+            "role" => "cashier",
         ]);
 
         User::factory()->create([
-            'name' => 'Admin-Danny',
-            'email' => 'testadmin@gmail.com',
-            'password' => bcrypt('admin-danny-123$'),
-            'role' => 'admin'
+            "name" => "Admin-Danny",
+            "email" => "testadmin@gmail.com",
+            "password" => bcrypt('admin-danny-123$'),
+            "role" => "admin",
         ]);
 
-        $this->command->info('Users seeded successfully!');
+        $this->command->info("Users seeded successfully!");
 
         // Seed Products
-        $this->call([
-            ProductSeeder::class,
-            StockSeeder::class,
-        ]);
+        $this->call([ProductSeeder::class, StockSeeder::class]);
 
-        $this->command->info('All seeders completed successfully!');
+        $this->command->info("All seeders completed successfully!");
     }
 }

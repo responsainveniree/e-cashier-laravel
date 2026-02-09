@@ -14,67 +14,64 @@ class ProductSeeder extends Seeder
     {
         $products = [
             [
-                'name' => 'T-Shirt Premium Cotton',
-                'price' => 150000,
-                'size' => 'medium',
-                'quantity' => 50,
-                'description' => 'T-Shirt berbahan cotton premium, nyaman dipakai sehari-hari.',
+                "name" => "T-Shirt Premium Cotton",
+                "price" => 150000,
+                "size" => "medium",
+                "description" =>
+                    "T-Shirt berbahan cotton premium, nyaman dipakai sehari-hari.",
             ],
             [
-                'name' => 'T-Shirt Premium Cotton',
-                'price' => 150000,
-                'size' => 'large',
-                'quantity' => 50,
-                'description' => 'T-Shirt berbahan cotton premium, nyaman dipakai sehari-hari.',
+                "name" => "T-Shirt Premium Cotton",
+                "price" => 150000,
+                "size" => "large",
+                "description" =>
+                    "T-Shirt berbahan cotton premium, nyaman dipakai sehari-hari.",
             ],
             [
-                'name' => 'T-Shirt Premium Cotton',
-                'price' => 150000,
-                'size' => 'large',
-                'quantity' => 50,
-                'description' => 'T-Shirt berbahan cotton premium, nyaman dipakai sehari-hari.',
+                "name" => "T-Shirt Premium Cotton",
+                "price" => 150000,
+                "size" => "large",
+                "description" =>
+                    "T-Shirt berbahan cotton premium, nyaman dipakai sehari-hari.",
             ],
             [
-                'name' => 'Polo Shirt Classic',
-                'price' => 200000,
-                'size' => 'large',
-                'quantity' => 40,
-                'description' => 'Polo shirt model klasik dengan bahan adem.',
+                "name" => "Polo Shirt Classic",
+                "price" => 200000,
+                "size" => "large",
+                "description" => "Polo shirt model klasik dengan bahan adem.",
             ],
             [
-                'name' => 'Polo Shirt Classic',
-                'price' => 200000,
-                'size' => 'large',
-                'quantity' => 40,
-                'description' => 'Polo shirt model klasik dengan bahan adem.',
+                "name" => "Polo Shirt Classic",
+                "price" => 200000,
+                "size" => "large",
+                "description" => "Polo shirt model klasik dengan bahan adem.",
             ],
             [
-                'name' => 'Polo Shirt Classic',
-                'price' => 200000,
-                'size' => 'medium',
-                'quantity' => 40,
-                'description' => 'Polo shirt model klasik dengan bahan adem.',
+                "name" => "Polo Shirt Classic",
+                "price" => 200000,
+                "size" => "medium",
+                "description" => "Polo shirt model klasik dengan bahan adem.",
             ],
             [
-                'name' => 'Hoodie Fleece Winter',
-                'price' => 350000,
-                'size' => 'medium',
-                'quantity' => 30,
-                'description' => 'Hoodie fleece hangat cocok untuk cuaca dingin.',
+                "name" => "Hoodie Fleece Winter",
+                "price" => 350000,
+                "size" => "medium",
+                "description" =>
+                    "Hoodie fleece hangat cocok untuk cuaca dingin.",
             ],
             [
-                'name' => 'Hoodie Fleece Winter',
-                'price' => 350000,
-                'size' => 'small',
-                'quantity' => 30,
-                'description' => 'Hoodie fleece hangat cocok untuk cuaca dingin.',
+                "name" => "Hoodie Fleece Winter",
+                "price" => 350000,
+                "size" => "small",
+                "description" =>
+                    "Hoodie fleece hangat cocok untuk cuaca dingin.",
             ],
             [
-                'name' => 'Hoodie Fleece Winter',
-                'price' => 350000,
-                'size' => 'small',
-                'quantity' => 30,
-                'description' => 'Hoodie fleece hangat cocok untuk cuaca dingin.',
+                "name" => "Hoodie Fleece Winter",
+                "price" => 350000,
+                "size" => "small",
+                "description" =>
+                    "Hoodie fleece hangat cocok untuk cuaca dingin.",
             ],
         ];
 
@@ -82,6 +79,6 @@ class ProductSeeder extends Seeder
             Product::create($product);
         }
 
-        $this->command->info('Products seeded successfully!');
+        $this->command->info("Products seeded successfully!");
     }
 }

@@ -14,7 +14,7 @@
                 Size
             </th>
             <th scope="col" class="px-6 py-3 font-medium">
-                Quantity
+                Total Quantity
             </th>
             <th scope="col" class="px-6 py-3 font-medium">
                 Stocks
@@ -37,7 +37,7 @@
                     </td>
                     <td class="px-6 text-left py-4" x-text="product.size">
                     </td>
-                    <td class="px-6 text-left py-4" x-text="product.quantity">
+                    <td class="px-6 text-left py-4" x-text="product.stocks_sum_quantity">
                     </td>
                     <td class="px-6 text-left py-4" x-text="product.stocks.length">
                     </td>
