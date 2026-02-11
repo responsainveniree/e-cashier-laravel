@@ -33,6 +33,9 @@
                         {{-- Edit Product --}}
                         @include('admin._edit_modal')
 
+                        {{-- Stock Modal --}}
+                        @include('admin._stock_table')
+
                         {{-- start component table --}}
                         <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default rounded-sm"
                             x-show="isVisible == 'card-table'">

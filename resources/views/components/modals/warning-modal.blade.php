@@ -16,7 +16,7 @@
             </button>
 
             <button @click="confirmWarning()" class="px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700">
-                Ya, tutup
+                Ya
             </button>
         </div>
     </div>

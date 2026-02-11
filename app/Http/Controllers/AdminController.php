@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
-use App\Models\Stock;
 
 class AdminController extends Controller
 {
@@ -51,22 +50,23 @@ class AdminController extends Controller
         try {
             $data = $request->validated();
 
-            Product::create([
-                "name" => $data->name,
-                "price" => $data->price,
-                "description" => $data->description,
-                "size" => $data->size,
-            ])
-                ->stocks()
-                ->create([
-                    "quantity" => $data->quantity,
-                ]);
+            $product = Product::create([
+                "name" => $data["name"],
+                "price" => $data["price"],
+                "description" => $data["description"],
+                "size" => $data["size"],
+            ]);
+
+            $product->stocks()->create([
+                "quantity" => $data["quantity"],
+            ]);
 
             return response()->json(
                 [
                     "message" => "Successfully create product data",
+                    "data" => $product,
                 ],
-                200,
+                201,
             );
         } catch (\Exception $error) {
             return response()->json(
@@ -109,5 +109,14 @@ class AdminController extends Controller
                 500,
             );
         }
+    }
+
+    public function deleteProductData(Product $product)
+    {
+        $product->delete();
+
+        return response()->json([
+            "message" => "Successfully delete product data",
+        ]);
     }
 }

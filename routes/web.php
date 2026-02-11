@@ -24,6 +24,11 @@ Route::middleware(["auth", "verified"])->group(function () {
         AdminController::class,
         "editProductData",
     ])->name("admin.edit-product");
+
+    Route::delete("/delete-product/{product}", [
+        AdminController::class,
+        "deleteProductData",
+    ])->name("admin.delete-product");
 });
 
 Route::view("dashboard", "dashboard")

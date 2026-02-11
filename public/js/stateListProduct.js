@@ -25,6 +25,9 @@ function stateListProduct(page = 1) {
             description: "",
         },
 
+        deleteProductId: null,
+
+        // size
         listSize: { small: "Small", medium: "Medium", large: "Large" },
 
         // Error
@@ -50,16 +53,24 @@ function stateListProduct(page = 1) {
 
         // Warning
         warningObject: {
+            warningType: "",
             isWarning: false,
             warningMessage: "",
             confirmWarning: false,
         },
 
         confirmWarning() {
-            this.resetField();
-            this.warningObject.isWarning = false;
-            this.warningObject.confirmWarning = false;
-            this.isVisible = "card-table";
+            if (this.warningObject.warningType == "createUpdateModal") {
+                this.resetField();
+                this.warningObject.isWarning = false;
+                this.warningObject.confirmWarning = false;
+                this.isVisible = "card-table";
+            } else if (this.warningObject.warningType == "deleteProductModal") {
+                this.deleteDataProduct();
+                this.warningObject.isWarning = false;
+                this.warningObject.confirmWarning = false;
+                this.isVisible = "card-table";
+            }
         },
 
         cancelWarning() {
@@ -69,6 +80,15 @@ function stateListProduct(page = 1) {
         // Visible logic
         isVisible: "card-table",
 
+        btnDeleteProduct(productId) {
+            this.deleteProductId = productId;
+            this.warningObject.isWarning = true;
+            this.warningObject.warningMessage =
+                "Yakin ingin menghapus product ini?";
+            this.warningObject.warningType = "deleteProductModal";
+        },
+
+        // Button CRUD
         btnCreateProduct() {
             this.resetField(); // Reset dulu sebelum buka modal create
             this.isVisible = "create-product";
@@ -104,7 +124,7 @@ function stateListProduct(page = 1) {
             this.isVisible = "edit-product";
         },
 
-        closeCreateUpdateModal() {
+        closeCreateUpdateModal(_warningType) {
             // Cek apakah ada data yang diisi
             const isAnyData =
                 this.product.name !== "" ||
@@ -115,12 +135,24 @@ function stateListProduct(page = 1) {
                 this.warningObject.isWarning = true;
                 this.warningObject.warningMessage =
                     "Masih ada data, yakin mau ditutup?";
+                this.warningObject.warningType = "createUpdateModal";
                 return;
             }
 
             this.resetField();
             this.isVisible = "card-table";
         },
+
+        //Open stocks info
+        btnStocksInfo() {
+            this.isVisible = "stock-table";
+        },
+
+        closeStockModal() {
+            this.isVisible = "card-table";
+        },
+
+        listStocks: [],
 
         resetField() {
             // Reset editProduct
@@ -141,6 +173,59 @@ function stateListProduct(page = 1) {
                 size: "small",
                 description: "",
             });
+        },
+
+        async deleteDataProduct() {
+            try {
+                await axios.delete(`/delete-product/${this.deleteProductId}`);
+
+                this.fetchProducts(this.currentPage);
+            } catch (error) {
+                if (error.response) {
+                    const status = error.response.status;
+                    const errorData = error.response.data.errors;
+
+                    Object.keys(this.errors).forEach(
+                        (key) => (this.errors[key] = ""),
+                    );
+
+                    switch (status) {
+                        case 404:
+                            this.errorObject.errorMessage = "Product not found";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
+                            break;
+                        case 422:
+                            for (data in errorData) {
+                                this.errors[data] = errorData[data][0];
+                            }
+                            break;
+                        case 500:
+                            this.errorObject.errorMessage =
+                                "Internal server error: " +
+                                error.response.data.message;
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
+                            break;
+                        case 401:
+                            this.errorObject.errorMessage =
+                                "You're not authorized";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
+                            break;
+                        default:
+                            this.errorObject.errorMessage =
+                                error.response.data.message ||
+                                "Something went wrong";
+                            this.errorObject.errorStatus = status;
+                            this.errorObject.isError = true;
+                    }
+                } else {
+                    this.errorObject.isError = true;
+                    this.errorObject.errorMessage =
+                        "Couldn't connect to the server";
+                }
+            }
         },
 
         async sendDataProduct() {
