@@ -29,6 +29,10 @@ Route::middleware(["auth", "verified"])->group(function () {
         AdminController::class,
         "deleteProductData",
     ])->name("admin.delete-product");
+    Route::get("/list-product-stocks/{product}", [
+        AdminController::class,
+        "getListStocks",
+    ])->name("admin.list-product-stocks");
 });
 
 Route::view("dashboard", "dashboard")

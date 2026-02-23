@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Stock;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -16,6 +18,7 @@ class AdminController extends Controller
         return view("admin.index");
     }
 
+    // Product
     public function getListProduct(Request $request)
     {
         try {
@@ -48,6 +51,17 @@ class AdminController extends Controller
     public function storeProduct(StoreProductRequest $request)
     {
         try {
+            $userId = Auth::user()->id;
+
+            if (!$userId) {
+                return response()->json(
+                    [
+                        "message" => "You haven't logged in yet",
+                    ],
+                    401,
+                );
+            }
+
             $data = $request->validated();
 
             $product = Product::create([
@@ -59,6 +73,8 @@ class AdminController extends Controller
 
             $product->stocks()->create([
                 "quantity" => $data["quantity"],
+                "status" => "IN_STOCK",
+                "created_by" => $userId,
             ]);
 
             return response()->json(
@@ -118,5 +134,28 @@ class AdminController extends Controller
         return response()->json([
             "message" => "Successfully delete product data",
         ]);
+    }
+
+    // Stock
+    public function getListStocks(Product $product)
+    {
+        try {
+            $stocks = Stock::where("product_id", $product->id)->get();
+
+            return response()->json(
+                [
+                    "message" => "Successfully retireved product stocks data",
+                    "data" => $stocks,
+                ],
+                200,
+            );
+        } catch (\Exception $error) {
+            return response()->json(
+                [
+                    "message" => $error->getMessage(),
+                ],
+                500,
+            );
+        }
     }
 }

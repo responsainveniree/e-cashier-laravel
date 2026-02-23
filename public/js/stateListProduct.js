@@ -27,6 +27,8 @@ function stateListProduct(page = 1) {
 
         deleteProductId: null,
 
+        stockProductId: null,
+
         // size
         listSize: { small: "Small", medium: "Medium", large: "Large" },
 
@@ -80,6 +82,7 @@ function stateListProduct(page = 1) {
         // Visible logic
         isVisible: "card-table",
 
+        // Button CRUD
         btnDeleteProduct(productId) {
             this.deleteProductId = productId;
             this.warningObject.isWarning = true;
@@ -88,7 +91,6 @@ function stateListProduct(page = 1) {
             this.warningObject.warningType = "deleteProductModal";
         },
 
-        // Button CRUD
         btnCreateProduct() {
             this.resetField(); // Reset dulu sebelum buka modal create
             this.isVisible = "create-product";
@@ -144,15 +146,22 @@ function stateListProduct(page = 1) {
         },
 
         //Open stocks info
-        btnStocksInfo() {
+        btnStocksInfo(stockProductId, productName) {
             this.isVisible = "stock-table";
+            this.stockProductId = stockProductId;
+            this.selectedProduct.name = productName;
+
+            this.fetchProductStocks();
         },
 
         closeStockModal() {
             this.isVisible = "card-table";
         },
 
-        listStocks: [],
+        selectedProduct: {
+            name: "",
+            stocks: [],
+        },
 
         resetField() {
             // Reset editProduct
@@ -358,18 +367,33 @@ function stateListProduct(page = 1) {
 
         async fetchProducts(page = 1) {
             try {
-                const result = await axios.get("list-products?page=" + page);
-                const res = result.data.data;
-
-                console.log(result);
+                const response = await axios.get("list-products?page=" + page);
+                const res = response.data.data;
 
                 this.listProduct = res.data;
                 this.currentPage = res.current_page;
                 this.lastPage = res.last_page;
                 this.nextPage = res.next_page_url;
                 this.prevPage = res.prev_page_url;
+            } catch (error) {
+                console.log("error", error);
+            }
+        },
 
-                console.log("produk:", this.listProduct);
+        // Stock
+        async fetchProductStocks() {
+            try {
+                const productId = Number(this.stockProductId);
+
+                const response = await axios.get(
+                    `/list-product-stocks/${productId}`,
+                );
+
+                const res = response;
+
+                console.log(res.data);
+
+                this.selectedProduct.stocks = res.data;
             } catch (error) {
                 console.log("error", error);
             }
