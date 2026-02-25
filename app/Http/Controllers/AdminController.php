@@ -79,7 +79,7 @@ class AdminController extends Controller
 
             return response()->json(
                 [
-                    "message" => "Successfully create product data",
+                    "message" => "Successfully created " . $data["name"],
                     "data" => $product,
                 ],
                 201,
@@ -112,7 +112,7 @@ class AdminController extends Controller
 
             return response()->json(
                 [
-                    "message" => "Successfully update product data",
+                    "message" => "Successfully updated " . $request["name"],
                     "data" => $product,
                 ],
                 200,
@@ -131,21 +131,25 @@ class AdminController extends Controller
     {
         $product->delete();
 
-        return response()->json([
-            "message" => "Successfully delete product data",
-        ]);
+        return response()->json(
+            [
+                "message" => "Successfully delete product data",
+            ],
+            200,
+        );
     }
 
     // Stock
     public function getListStocks(Product $product)
     {
         try {
-            $stocks = Stock::where("product_id", $product->id)->get();
+            $stocks = Stock::where("product_id", $product["id"])->get();
 
             return response()->json(
                 [
                     "message" => "Successfully retireved product stocks data",
-                    "data" => $stocks,
+                    "name" => $product["name"],
+                    "stockProducts" => $stocks,
                 ],
                 200,
             );

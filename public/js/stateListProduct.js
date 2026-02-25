@@ -29,6 +29,8 @@ function stateListProduct(page = 1) {
 
         stockProductId: null,
 
+        isLoading: false,
+
         // size
         listSize: { small: "Small", medium: "Medium", large: "Large" },
 
@@ -48,6 +50,18 @@ function stateListProduct(page = 1) {
         },
 
         closeError() {
+            this.errorObject.isError = false;
+            this.errorObject.errorMessage = "";
+            this.errorObject.errorStatus = null;
+        },
+
+        clearErrors() {
+            // Clear field validation errors
+            Object.keys(this.errors).forEach((key) => {
+                this.errors[key] = "";
+            });
+
+            // Clear general error object
             this.errorObject.isError = false;
             this.errorObject.errorMessage = "";
             this.errorObject.errorStatus = null;
@@ -186,59 +200,30 @@ function stateListProduct(page = 1) {
 
         async deleteDataProduct() {
             try {
-                await axios.delete(`/delete-product/${this.deleteProductId}`);
+                this.isLoading = true;
+
+                const res = await axios.delete(
+                    `/delete-product/${this.deleteProductId}`,
+                );
+
+                if (res.status === 200) {
+                    swalSuccess(res.data.message);
+                }
 
                 this.fetchProducts(this.currentPage);
             } catch (error) {
-                if (error.response) {
-                    const status = error.response.status;
-                    const errorData = error.response.data.errors;
-
-                    Object.keys(this.errors).forEach(
-                        (key) => (this.errors[key] = ""),
-                    );
-
-                    switch (status) {
-                        case 404:
-                            this.errorObject.errorMessage = "Product not found";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        case 422:
-                            for (data in errorData) {
-                                this.errors[data] = errorData[data][0];
-                            }
-                            break;
-                        case 500:
-                            this.errorObject.errorMessage =
-                                "Internal server error: " +
-                                error.response.data.message;
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        case 401:
-                            this.errorObject.errorMessage =
-                                "You're not authorized";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        default:
-                            this.errorObject.errorMessage =
-                                error.response.data.message ||
-                                "Something went wrong";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                    }
-                } else {
-                    this.errorObject.isError = true;
-                    this.errorObject.errorMessage =
-                        "Couldn't connect to the server";
-                }
+                errorHandler(error, this);
+            } finally {
+                this.isLoading = false;
             }
         },
 
         async sendDataProduct() {
             try {
+                this.clearErrors();
+
+                this.isLoading = true;
+
                 const newProduct = {
                     name: this.product.name,
                     price: Number(this.product.price),
@@ -247,55 +232,28 @@ function stateListProduct(page = 1) {
                     description: this.product.description,
                 };
 
-                await axios.post("post-product", newProduct);
+                const res = await axios.post("post-product", newProduct);
                 this.resetField();
+
+                if (res.status === 201) {
+                    swalSuccess(res.data.message);
+                }
+
                 this.isVisible = "card-table";
                 this.fetchProducts(this.currentPage);
             } catch (error) {
-                if (error.response) {
-                    const status = error.response.status;
-                    const errorData = error.response.data.errors;
-
-                    Object.keys(this.errors).forEach(
-                        (key) => (this.errors[key] = ""),
-                    );
-
-                    switch (status) {
-                        case 422:
-                            for (data in errorData) {
-                                this.errors[data] = errorData[data][0];
-                            }
-                            break;
-                        case 500:
-                            this.errorObject.errorMessage =
-                                "Internal server error: " +
-                                error.response.data.message;
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        case 401:
-                            this.errorObject.errorMessage =
-                                "You're not authorized";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        default:
-                            this.errorObject.errorMessage =
-                                error.response.data.message ||
-                                "Something went wrong";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                    }
-                } else {
-                    this.errorObject.isError = true;
-                    this.errorObject.errorMessage =
-                        "Couldn't connect to the server";
-                }
+                errorHandler(error, this);
+            } finally {
+                this.isLoading = false;
             }
         },
 
         async editDataProduct() {
             try {
+                this.clearErrors();
+
+                this.isLoading = true;
+
                 // Gunakan editProduct sepenuhnya
                 const dataToSend = {
                     id: this.editProduct.id,
@@ -305,57 +263,18 @@ function stateListProduct(page = 1) {
                     description: this.editProduct.description,
                 };
 
-                await axios.patch("edit-product", dataToSend);
+                const res = await axios.patch("edit-product", dataToSend);
+
+                if (res.status === 200) {
+                    swalSuccess(res.data.message);
+                }
 
                 this.isVisible = "card-table";
                 this.fetchProducts(this.currentPage);
-
-                console.log("Product updated successfully");
             } catch (error) {
-                if (error.response) {
-                    const status = error.response.status;
-                    const errorData = error.response.data.errors;
-
-                    Object.keys(this.errors).forEach(
-                        (key) => (this.errors[key] = ""),
-                    );
-
-                    switch (status) {
-                        case 404:
-                            this.errorObject.errorMessage = "Product not found";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        case 422:
-                            for (data in errorData) {
-                                this.errors[data] = errorData[data][0];
-                            }
-                            break;
-                        case 500:
-                            this.errorObject.errorMessage =
-                                "Internal server error: " +
-                                error.response.data.message;
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        case 401:
-                            this.errorObject.errorMessage =
-                                "You're not authorized";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                            break;
-                        default:
-                            this.errorObject.errorMessage =
-                                error.response.data.message ||
-                                "Something went wrong";
-                            this.errorObject.errorStatus = status;
-                            this.errorObject.isError = true;
-                    }
-                } else {
-                    this.errorObject.isError = true;
-                    this.errorObject.errorMessage =
-                        "Couldn't connect to the server";
-                }
+                errorHandler(error, this);
+            } finally {
+                this.isLoading = false;
             }
         },
 
@@ -391,9 +310,8 @@ function stateListProduct(page = 1) {
 
                 const res = response;
 
-                console.log(res.data);
-
-                this.selectedProduct.stocks = res.data;
+                this.selectedProduct.name = res.data.name;
+                this.selectedProduct.stocks = res.data.stockProducts;
             } catch (error) {
                 console.log("error", error);
             }
