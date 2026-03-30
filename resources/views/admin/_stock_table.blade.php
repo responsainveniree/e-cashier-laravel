@@ -6,7 +6,7 @@
     role="dialog" aria-modal="true">
 
     <!-- Backdrop/Overlay -->
-    <div class="fixed inset-0 bg-dark-500 bg-opacity-75 transition-opacity" @click="closeStockModal()"></div>
+    <div class="fixed inset-0 bg-dark-500 bg-opacity-75 transition-opacity" @click="closseStockModal()"></div>
 
     <!-- Modal Container -->
     <div class="flex min-h-full items-center justify-center p-4">
@@ -63,10 +63,10 @@
                                     <td class="px-6 text-left py-4" x-text="stock.quantity"></td>
                                     <td class="px-6 text-left py-4">
                                         <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                            :class="stock.status === 'available' ?
+                                            :class="stock.status === 'IN_STOCK' ?
                                                 'bg-green-100 text-green-800' :
                                                 'bg-red-100 text-red-800'"
-                                            x-text="stock.status || 'available'">
+                                            x-text="stock.status">
                                         </span>
                                     </td>
                                     <td class="px-6 text-left py-4" x-text="stock.created_by || 'Admin'">
@@ -110,7 +110,7 @@
 
             <!-- Modal Footer -->
             <div class="bg-gray-700 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-                <button type="button" @click="btnAddNewStock()"
+                <button type="button" @click="openCreateStockProductModal()"
                     class="inline-flex justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
                     <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />

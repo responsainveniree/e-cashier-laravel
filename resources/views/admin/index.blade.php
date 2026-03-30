@@ -6,9 +6,6 @@
             </h2>
         </x-slot>
 
-
-
-
         <div class="py-12" x-data="stateListProduct()">
             <template x-if="isLoading">
                 <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
@@ -56,6 +53,9 @@
 
                         {{-- Stock Modal --}}
                         @include('admin._stock_table')
+
+                        {{-- Create stock modal --}}
+                        @include('admin._create_stock_modal')
 
                         {{-- start component table --}}
                         <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default rounded-sm"

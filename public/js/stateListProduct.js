@@ -34,6 +34,12 @@ function stateListProduct(page = 1) {
         // size
         listSize: { small: "Small", medium: "Medium", large: "Large" },
 
+        // Stocks
+        stock: {
+            quantity: 0,
+            status: "",
+        },
+
         // Error
         errorObject: {
             isError: false,
@@ -116,11 +122,16 @@ function stateListProduct(page = 1) {
             console.log("check clean data:", cleanData);
 
             // Simpan data ke editProduct (untuk form edit)
+            const qty =
+                cleanData.stock && cleanData.stock.quantity != null
+                    ? cleanData.stock.quantity
+                    : cleanData.quantity ?? 1;
+
             this.editProduct = {
                 id: cleanData.id,
                 name: cleanData.name,
                 price: cleanData.price,
-                quantity: cleanData.quantity,
+                quantity: qty,
                 size: cleanData.size,
                 description: cleanData.description,
             };
@@ -129,7 +140,7 @@ function stateListProduct(page = 1) {
                 id: cleanData.id,
                 name: cleanData.name,
                 price: cleanData.price,
-                quantity: cleanData.quantity,
+                quantity: qty,
                 size: cleanData.size,
                 description: cleanData.description,
             };
@@ -170,6 +181,7 @@ function stateListProduct(page = 1) {
 
         closeStockModal() {
             this.isVisible = "card-table";
+            this.fetchProducts(this.currentPage);
         },
 
         selectedProduct: {
@@ -195,6 +207,12 @@ function stateListProduct(page = 1) {
                 quantity: 1,
                 size: "small",
                 description: "",
+            });
+
+            Object.assign(this.stock, {
+                productId: "",
+                quantity: 0,
+                status: "",
             });
         },
 
@@ -300,8 +318,21 @@ function stateListProduct(page = 1) {
         },
 
         // Stock
+
+        async openCreateStockProductModal() {
+            try {
+                this.resetField(); // Reset dulu sebelum buka modal create
+                this.isVisible = "create-stock-product";
+            } catch (error) {
+                errorHandler(error, this);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
         async fetchProductStocks() {
             try {
+                this.isLoading = true;
                 const productId = Number(this.stockProductId);
 
                 const response = await axios.get(
@@ -314,6 +345,36 @@ function stateListProduct(page = 1) {
                 this.selectedProduct.stocks = res.data.stockProducts;
             } catch (error) {
                 console.log("error", error);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        async addProductStock() {
+            try {
+                this.isLoading = true;
+
+                const newStock = {
+                    quantity: Number(this.stock.quantity),
+                    productId: this.stockProductId,
+                };
+
+                console.log(newStock);
+
+                const res = await axios.post("/add-product-stock", newStock);
+                this.resetField();
+
+                if (res.status === 201) {
+                    swalSuccess(res.data.message);
+                }
+
+                this.isVisible = "stock-table";
+                this.fetchProductStocks();
+                this.fetchProducts(this.currentPage);
+            } catch (error) {
+                errorHandler(error, this);
+            } finally {
+                this.isLoading = false;
             }
         },
 

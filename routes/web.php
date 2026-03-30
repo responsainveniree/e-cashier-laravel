@@ -33,6 +33,10 @@ Route::middleware(["auth", "verified"])->group(function () {
         AdminController::class,
         "getListStocks",
     ])->name("admin.list-product-stocks");
+    Route::post("add-product-stock", [
+        AdminController::class,
+        "storeStockProduct",
+    ])->name("admin.add-product-stock");
 });
 
 Route::view("dashboard", "dashboard")

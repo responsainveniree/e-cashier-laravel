@@ -17,4 +17,12 @@ class Product extends Model
     {
         return $this->hasMany(Stock::class);
     }
+
+    /**
+     * Single canonical stock row for list/display (oldest record when legacy data has multiple).
+     */
+    public function stock()
+    {
+        return $this->hasOne(Stock::class)->oldestOfMany();
+    }
 }
