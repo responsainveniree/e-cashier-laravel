@@ -15,7 +15,6 @@
     <script src="{{ asset('js/stateListProduct.js') }}"></script>
     <script src="{{ asset('js/helper.js') }}"></script>
     <script src="{{ asset('js/errorHandler.js') }}"></script>
-    <script src="{{ asset('js/constants.js') }}"></script>
 
 
     <!-- Scripts -->

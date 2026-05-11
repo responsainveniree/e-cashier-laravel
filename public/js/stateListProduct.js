@@ -11,7 +11,6 @@ function stateListProduct(page = 1) {
             id: null,
             name: "",
             price: "",
-            quantity: 1,
             size: "small",
             description: "",
         },
@@ -28,6 +27,8 @@ function stateListProduct(page = 1) {
         deleteProductId: null,
 
         stockProductId: null,
+
+        deleteStockId: null,
 
         isLoading: false,
 
@@ -92,6 +93,11 @@ function stateListProduct(page = 1) {
                 this.warningObject.isWarning = false;
                 this.warningObject.confirmWarning = false;
                 this.isVisible = "card-table";
+            } else if (this.warningObject.warningType == "deleteStockModal") {
+                this.deleteStockProduct();
+                this.warningObject.isWarning = false;
+                this.warningObject.confirmWarning = false;
+                this.isVisible = "card-table";
             }
         },
 
@@ -125,7 +131,7 @@ function stateListProduct(page = 1) {
             const qty =
                 cleanData.stock && cleanData.stock.quantity != null
                     ? cleanData.stock.quantity
-                    : cleanData.quantity ?? 1;
+                    : (cleanData.quantity ?? 1);
 
             this.editProduct = {
                 id: cleanData.id,
@@ -307,6 +313,8 @@ function stateListProduct(page = 1) {
                 const response = await axios.get("list-products?page=" + page);
                 const res = response.data.data;
 
+                console.log(res);
+
                 this.listProduct = res.data;
                 this.currentPage = res.current_page;
                 this.lastPage = res.last_page;
@@ -318,7 +326,6 @@ function stateListProduct(page = 1) {
         },
 
         // Stock
-
         async openCreateStockProductModal() {
             try {
                 this.resetField(); // Reset dulu sebelum buka modal create
@@ -355,8 +362,10 @@ function stateListProduct(page = 1) {
                 this.isLoading = true;
 
                 const newStock = {
-                    quantity: Number(this.stock.quantity),
-                    productId: this.stockProductId,
+                    quantity: Number(
+                        this.stock.quantity === 0 ? 1 : this.stock.quantity,
+                    ),
+                    product_id: this.stockProductId,
                 };
 
                 console.log(newStock);
@@ -371,6 +380,35 @@ function stateListProduct(page = 1) {
                 this.isVisible = "stock-table";
                 this.fetchProductStocks();
                 this.fetchProducts(this.currentPage);
+            } catch (error) {
+                errorHandler(error, this);
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        deleteStockModal(stockId) {
+            this.deleteStockId = stockId;
+            this.warningObject.isWarning = true;
+            this.warningObject.warningMessage =
+                "Yakin ingin menghapus stock product ini?";
+            this.warningObject.warningType = "deleteStockModal";
+        },
+
+        async deleteStockProduct() {
+            try {
+                this.isLoading = true;
+
+                // ada yang bisa dlete ada yang gabisa, dikatakn notfound
+                console.log("test 403:", this.stockProductId);
+
+                await axios.delete(
+                    `/delete-product-stock/${Number(this.deleteStockId)}`,
+                );
+
+                swalSuccess(
+                    `Successfully delete product stock with product id: ${this.stockProductId}, stock id: ${this.deleteStockId}`,
+                );
             } catch (error) {
                 errorHandler(error, this);
             } finally {

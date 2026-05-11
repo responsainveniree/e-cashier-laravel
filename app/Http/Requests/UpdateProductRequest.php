@@ -23,8 +23,7 @@ class UpdateProductRequest extends FormRequest
     {
         return [
             "id" => "required|numeric",
-            "name" =>
-                "required|string|max:255|unique:products,name," . $this->id,
+            "name" => "required|string|max:255" . $this->id,
             "price" => "required|numeric|min:0",
             "size" => "required|string",
             "description" => "required|string|max:1000",

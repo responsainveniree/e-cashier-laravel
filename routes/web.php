@@ -37,6 +37,10 @@ Route::middleware(["auth", "verified"])->group(function () {
         AdminController::class,
         "storeStockProduct",
     ])->name("admin.add-product-stock");
+    Route::delete("/delete-product-stock/{stockId}", [
+        AdminController::class,
+        "deleteStockProduct",
+    ])->name("admin.delete-product-stock");
 });
 
 Route::view("dashboard", "dashboard")

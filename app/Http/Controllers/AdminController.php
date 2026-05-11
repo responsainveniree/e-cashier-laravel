@@ -25,10 +25,21 @@ class AdminController extends Controller
         try {
             $perPage = $request->get("per_page", $this->dataPerPage);
 
-            $listProduct = Product::with("stock")
+            $listProduct = Product::with([
+                "stocks" => function ($query) {
+                    $query->where("status", "IN_STOCK");
+                },
+            ])
+                ->withSum(
+                    [
+                        "stocks" => function ($query) {
+                            $query->where("status", "IN_STOCK");
+                        },
+                    ],
+                    "quantity",
+                )
                 ->orderBy("created_at", "desc")
                 ->paginate($perPage);
-
             return response()->json(
                 [
                     "message" => "Get data list product successfully",
@@ -177,14 +188,12 @@ class AdminController extends Controller
                 );
             }
 
-            $stock = Stock::updateOrCreate(
-                ["product_id" => $request["productId"]],
-                [
-                    "quantity" => $request["quantity"],
-                    "status" => "IN_STOCK",
-                    "created_by" => $user,
-                ],
-            );
+            $stock = Stock::create([
+                "quantity" => $request["quantity"],
+                "status" => "IN_STOCK",
+                "product_id" => $request["product_id"],
+                "created_by" => $user,
+            ]);
 
             return response()->json(
                 [
@@ -203,10 +212,17 @@ class AdminController extends Controller
         }
     }
 
-    public function deleteStockProduct(Stock $stock)
+    public function deleteStockProduct(Stock $stockId)
     {
         try {
-            $user = Auth::user()->id;
+            $stockId->delete();
+
+            return response()->json(
+                [
+                    "message" => "Successfully deleted stock data",
+                ],
+                201,
+            );
         } catch (\Exception $error) {
             return response()->json(
                 [

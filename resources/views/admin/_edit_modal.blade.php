@@ -79,8 +79,17 @@
                         </div>
 
                         <!-- Quantity -->
-                        <div class="col-span-2 md:col-span-1">
-                        </div>
+                        {{-- <div class="col-span-2 md:col-span-1">
+                            <label for="quantity"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-100">Quantity</label>
+                            <input type="number" x-model="editProduct.quantity" id="edit_quantity"
+                                class="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 transition ease-in-out duration-150 shadow-sm"
+                                placeholder="0" required>
+                            <template x-if="errors.quantity.length > 0">
+                                <p class="mt-2.5 text-sm text-red-500" x-text="errors.quantity">
+                                </p>
+                            </template>
+                        </div> --}}
 
                         <!-- Description - Full width -->
                         <div class="col-span-2 w-full">

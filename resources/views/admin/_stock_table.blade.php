@@ -80,7 +80,7 @@
                                             </button>
                                             <button
                                                 class="rounded-md bg-red-50 text-red-600 box-border border border-red-200 focus:ring-4 focus:ring-red-200 shadow-xs text-sm px-3 py-2 focus:outline-none"
-                                                @click="btnDeleteStock(stock.id)" type="button">
+                                                @click="deleteStockModal(stock.id)" type="button">
                                                 Delete
                                             </button>
                                         </div>
