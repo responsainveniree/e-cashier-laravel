@@ -14,7 +14,13 @@ return new class extends Migration {
         Schema::create("stocks", function (Blueprint $table) {
             $table->id();
             $table->integer("quantity");
-            $table->enum("status", ["IN_STOCK", "REJECTED", "SOLD_OUT"]);
+            $table->enum("status", [
+                "IN_STOCK",
+                "REJECTED",
+                "SOLD_OUT",
+                "EXPIRY",
+                "RESTOCK",
+            ]);
             $table->string("created_by");
             $table->foreignIdFor(Product::class);
             $table->timestamps();

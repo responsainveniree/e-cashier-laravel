@@ -41,6 +41,10 @@ Route::middleware(["auth", "verified"])->group(function () {
         AdminController::class,
         "deleteStockProduct",
     ])->name("admin.delete-product-stock");
+    Route::patch("/product/{stockId}/edit", [
+        AdminController::class,
+        "editStockProduct",
+    ])->name("admin.edit-product-stock");
 });
 
 Route::view("dashboard", "dashboard")

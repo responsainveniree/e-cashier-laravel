@@ -63,9 +63,13 @@
                                     <td class="px-6 text-left py-4" x-text="stock.quantity"></td>
                                     <td class="px-6 text-left py-4">
                                         <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                            :class="stock.status === 'IN_STOCK' ?
-                                                'bg-green-100 text-green-800' :
-                                                'bg-red-100 text-red-800'"
+                                            :class="{
+                                                'bg-green-100 text-green-800': stock.status === 'IN_STOCK',
+                                                'bg-red-100   text-red-800': stock.status === 'SOLD_OUT',
+                                                'bg-yellow-100 text-yellow-800': stock.status === 'REJECTED',
+                                                'bg-purple-100 text-purple-800': stock.status === 'EXPIRY',
+                                                'bg-blue-100 text-blue-800': stock.status === 'RESTOCK',
+                                            }"
                                             x-text="stock.status">
                                         </span>
                                     </td>
@@ -75,7 +79,8 @@
                                         <div class="flex gap-2">
                                             <button
                                                 class="rounded-md bg-white text-black box-border border border-gray-300 focus:ring-4 focus:ring-blue-200 shadow-xs text-sm px-3 py-2 focus:outline-none"
-                                                @click="buttonEditStock(stock)" type="button">
+                                                @click="editStockModal({id: stock.id, quantity: stock.quantity, status: stock.status})"
+                                                type="button">
                                                 Edit
                                             </button>
                                             <button

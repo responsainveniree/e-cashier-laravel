@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Stock;
-use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateStockRequest;
 use App\Http\Requests\StoreStockProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Support\Facades\Auth;
@@ -140,7 +141,7 @@ class AdminController extends Controller
 
     public function deleteProductData(Product $product)
     {
-        $product->delete();
+        $product->deleteOrFail();
 
         return response()->json(
             [
@@ -154,7 +155,7 @@ class AdminController extends Controller
     public function getListStocks(Product $product)
     {
         try {
-            $stocks = Stock::where("product_id", $product["id"])->get();
+            $stocks = $product->stocks;
 
             return response()->json(
                 [
@@ -215,7 +216,7 @@ class AdminController extends Controller
     public function deleteStockProduct(Stock $stockId)
     {
         try {
-            $stockId->delete();
+            $stockId->deleteOrFail();
 
             return response()->json(
                 [
@@ -230,6 +231,30 @@ class AdminController extends Controller
                 ],
                 500,
             );
+        }
+    }
+
+    public function editStockProduct(
+        UpdateStockRequest $request,
+        Stock $stockId,
+    ) {
+        try {
+            $validated = $request->validated();
+
+            $stockId->updateOrFail([
+                "quantity" => $validated["quantity"],
+                "status" => $validated["status"],
+            ]);
+
+            return response()->json(
+                [
+                    "message" => "Stock updated successfully",
+                    "data" => $stockId,
+                ],
+                200,
+            );
+        } catch (\Exception $e) {
+            return response()->json(["message" => $e->getMessage()], 500);
         }
     }
 }

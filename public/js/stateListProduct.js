@@ -30,6 +30,12 @@ function stateListProduct(page = 1) {
 
         deleteStockId: null,
 
+        editStock: {
+            id: null,
+            quantity: null,
+            status: null,
+        },
+
         isLoading: false,
 
         // size
@@ -418,6 +424,42 @@ function stateListProduct(page = 1) {
 
         init() {
             this.fetchProducts(this.currentPage);
+        },
+
+        editStockModal({ id, quantity, status }) {
+            this.editStock = {
+                id: Number(id),
+                quantity: Number(quantity),
+                status: status,
+            };
+            this.isVisible = "stock-edit-modal";
+        },
+
+        async editDataStock() {
+            try {
+                this.clearErrors();
+                this.isLoading = true;
+
+                const res = await axios.patch(
+                    `/product/${this.editStock.id}/edit`,
+                    {
+                        id: this.editStock.id,
+                        quantity: Number(this.editStock.quantity),
+                        status: this.editStock.status,
+                    },
+                );
+
+                if (res.status === 200) {
+                    swalSuccess(res.data.message);
+                }
+
+                this.isVisible = "stock-table";
+                this.fetchProductStocks();
+            } catch (error) {
+                errorHandler(error, this);
+            } finally {
+                this.isLoading = false;
+            }
         },
     };
 }

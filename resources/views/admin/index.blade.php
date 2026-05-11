@@ -54,6 +54,9 @@
                         {{-- Stock Modal --}}
                         @include('admin._stock_table')
 
+                        {{-- Edit Stock Modal --}}
+                        @include('admin._edit_modal_stock')
+
                         {{-- Create stock modal --}}
                         @include('admin._create_stock_modal')
 
