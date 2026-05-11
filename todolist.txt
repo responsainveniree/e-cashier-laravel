@@ -1,1 +1,1 @@
-buat fetch stock modal, buat feature check modal
+kalau status stock == restock, shows current data sama field data yang bakal di tambahkan, data sold out dan instock di hapus aja dari edit stock
